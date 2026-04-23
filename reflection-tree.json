@@ -1,0 +1,217 @@
+{
+  "nodes": [
+    {
+      "id": "START",
+      "type": "start",
+      "text": "Good evening. Let's take a moment to look at your day.",
+      "target": "A1_OPEN"
+    },
+    {
+      "id": "A1_OPEN",
+      "type": "question",
+      "text": "How would you describe today's energy?",
+      "options": [
+        { "text": "High and positive", "signal": "energy:high" },
+        { "text": "Low and draining", "signal": "energy:low" },
+        { "text": "Chaotic and reactive", "signal": "energy:chaos" }
+      ],
+      "target": "A1_D1"
+    },
+    {
+      "id": "A1_D1",
+      "type": "decision",
+      "rules": [
+        { "condition": "answers.A1_OPEN == 'High and positive'", "target": "A1_Q_AGENCY_POS" },
+        { "condition": "default", "target": "A1_Q_AGENCY_NEG" }
+      ]
+    },
+    {
+      "id": "A1_Q_AGENCY_POS",
+      "type": "question",
+      "text": "You described today as '{A1_OPEN.answer}'. When things went your way today, what was the primary reason?",
+      "options": [
+        { "text": "I planned and executed well", "signal": "axis1:internal" },
+        { "text": "Others stepped up and helped", "signal": "axis1:external" },
+        { "text": "I adapted quickly to the situation", "signal": "axis1:internal" },
+        { "text": "The circumstances were just favorable", "signal": "axis1:external" }
+      ],
+      "target": "A1_Q_REFLECTION_PROMPT"
+    },
+    {
+      "id": "A1_Q_AGENCY_NEG",
+      "type": "question",
+      "text": "You described today as '{A1_OPEN.answer}'. When you hit a roadblock today, what was your initial reaction?",
+      "options": [
+        { "text": "I looked for what I could control", "signal": "axis1:internal" },
+        { "text": "I felt blocked by others' actions", "signal": "axis1:external" },
+        { "text": "I pivoted to a different approach", "signal": "axis1:internal" },
+        { "text": "I felt overwhelmed by the situation", "signal": "axis1:external" }
+      ],
+      "target": "A1_Q_REFLECTION_PROMPT"
+    },
+    {
+      "id": "A1_Q_REFLECTION_PROMPT",
+      "type": "question",
+      "text": "Looking back at those key moments, how much influence do you feel you actually had over the outcomes?",
+      "options": [
+        { "text": "Almost total influence", "signal": "axis1:internal" },
+        { "text": "Some influence, but mostly constrained", "signal": "axis1:external" },
+        { "text": "Enough to shape the direction", "signal": "axis1:internal" },
+        { "text": "Very little, I was mostly reacting", "signal": "axis1:external" }
+      ],
+      "target": "A1_D_EVAL"
+    },
+    {
+      "id": "A1_D_EVAL",
+      "type": "decision",
+      "rules": [
+        { "condition": "signals.axis1.internal >= signals.axis1.external", "target": "A1_R_INT" },
+        { "condition": "default", "target": "A1_R_EXT" }
+      ]
+    },
+    {
+      "id": "A1_R_INT",
+      "type": "reflection",
+      "text": "You recognized your hand in what happened today. Whether things went well or poorly, you maintained your agency. That's the driver's seat.",
+      "target": "BRIDGE_1_2"
+    },
+    {
+      "id": "A1_R_EXT",
+      "type": "reflection",
+      "text": "Today felt like it happened *to* you. It's natural to feel constrained by circumstances or others, but remember: even in chaos, you always have a choice in your response.",
+      "target": "BRIDGE_1_2"
+    },
+    {
+      "id": "BRIDGE_1_2",
+      "type": "bridge",
+      "text": "Now, let's shift from how you navigated today's events, to what you brought to the people around you.",
+      "target": "A2_OPEN"
+    },
+    {
+      "id": "A2_OPEN",
+      "type": "question",
+      "text": "Think about your interactions with colleagues today. What was your primary focus?",
+      "options": [
+        { "text": "Making sure I got what I needed", "signal": "axis2:entitlement" },
+        { "text": "Supporting others where I could", "signal": "axis2:contribution" },
+        { "text": "Just getting my own tasks done", "signal": "axis2:entitlement" },
+        { "text": "Improving a shared process or resource", "signal": "axis2:contribution" }
+      ],
+      "target": "A2_Q_CHALLENGE"
+    },
+    {
+      "id": "A2_Q_CHALLENGE",
+      "type": "question",
+      "text": "If someone asked you to do a task slightly outside your role today, how did you (or would you) react?",
+      "options": [
+        { "text": "I'd do it if it helps the team succeed", "signal": "axis2:contribution" },
+        { "text": "I'd wonder why I'm being asked to do extra", "signal": "axis2:entitlement" },
+        { "text": "I'd look at it as a chance to learn or give value", "signal": "axis2:contribution" },
+        { "text": "I'd feel like my actual work is being undervalued", "signal": "axis2:entitlement" }
+      ],
+      "target": "A2_D_EVAL"
+    },
+    {
+      "id": "A2_D_EVAL",
+      "type": "decision",
+      "rules": [
+        { "condition": "signals.axis2.contribution >= signals.axis2.entitlement", "target": "A2_R_CONTRIB" },
+        { "condition": "default", "target": "A2_R_ENTITLE" }
+      ]
+    },
+    {
+      "id": "A2_R_CONTRIB",
+      "type": "reflection",
+      "text": "You operated with a mindset of contribution today. You focused on what you could give, which builds trust and organizational health.",
+      "target": "BRIDGE_2_3"
+    },
+    {
+      "id": "A2_R_ENTITLE",
+      "type": "reflection",
+      "text": "You were focused on what you were owed today—your time, your role, your credit. It's easy to keep score, but true influence comes from focusing on the value you provide, not what you receive.",
+      "target": "BRIDGE_2_3"
+    },
+    {
+      "id": "BRIDGE_2_3",
+      "type": "bridge",
+      "text": "Finally, let's look at the scope of your focus. Where did your attention naturally settle today?",
+      "target": "A3_OPEN"
+    },
+    {
+      "id": "A3_OPEN",
+      "type": "question",
+      "text": "When you consider today's biggest win or loss, who was the main character in your mind?",
+      "options": [
+        { "text": "Just me and my performance", "signal": "axis3:self" },
+        { "text": "My immediate team and our shared goals", "signal": "axis3:altro" },
+        { "text": "How the outcome affected my standing", "signal": "axis3:self" },
+        { "text": "The end user or the broader company mission", "signal": "axis3:altro" }
+      ],
+      "target": "A3_Q_PERSPECTIVE"
+    },
+    {
+      "id": "A3_Q_PERSPECTIVE",
+      "type": "question",
+      "text": "Think of a moment of friction today. How much did you consider the other person's context?",
+      "options": [
+        { "text": "Barely at all; I was focused on my own stress", "signal": "axis3:self" },
+        { "text": "A little, but my needs were more pressing", "signal": "axis3:self" },
+        { "text": "I tried to understand what pressures they were under", "signal": "axis3:altro" },
+        { "text": "I stepped into their shoes to find a mutual fix", "signal": "axis3:altro" }
+      ],
+      "target": "A3_D_EVAL"
+    },
+    {
+      "id": "A3_D_EVAL",
+      "type": "decision",
+      "rules": [
+        { "condition": "signals.axis3.altro >= signals.axis3.self", "target": "A3_R_ALTRO" },
+        { "condition": "default", "target": "A3_R_SELF" }
+      ]
+    },
+    {
+      "id": "A3_R_ALTRO",
+      "type": "reflection",
+      "text": "Your radius of concern was wide today. By looking past your own immediate needs, you connected with the larger purpose of your work. That outward focus is the foundation of true leadership.",
+      "target": "SUMMARY_D"
+    },
+    {
+      "id": "A3_R_SELF",
+      "type": "reflection",
+      "text": "Your world was a bit small today. When stress hits, our vision narrows to our own problems. The fastest way to relieve that pressure tomorrow is to widen your lens and focus on helping someone else.",
+      "target": "SUMMARY_D"
+    },
+    {
+      "id": "SUMMARY_D",
+      "type": "decision",
+      "rules": [
+        { "condition": "(signals.axis1.internal >= signals.axis1.external) and (signals.axis2.contribution >= signals.axis2.entitlement) and (signals.axis3.altro >= signals.axis3.self)", "target": "SUM_MASTERY" },
+        { "condition": "(signals.axis1.external > signals.axis1.internal) and (signals.axis2.entitlement > signals.axis2.contribution) and (signals.axis3.self > signals.axis3.altro)", "target": "SUM_SURVIVAL" },
+        { "condition": "default", "target": "SUM_BALANCED" }
+      ]
+    },
+    {
+      "id": "SUM_MASTERY",
+      "type": "summary",
+      "text": "Today you showed up as an active creator of value. You owned your outcomes, contributed beyond your boundaries, and kept your focus on the bigger picture. That's how great cultures are built.",
+      "target": "END"
+    },
+    {
+      "id": "SUM_SURVIVAL",
+      "type": "summary",
+      "text": "Today felt like a battle for survival. You felt constrained by circumstances, protective of your effort, and focused inward. Acknowledge the friction, but remember: you have the power to reset your stance tomorrow.",
+      "target": "END"
+    },
+    {
+      "id": "SUM_BALANCED",
+      "type": "summary",
+      "text": "Today was a mix. You had moments where you took the reins and moments where you reacted. You contributed, but also protected your boundaries. Growth isn't about perfection; it's about noticing these shifts and intentionally choosing your posture tomorrow.",
+      "target": "END"
+    },
+    {
+      "id": "END",
+      "type": "end",
+      "text": "Rest well. We'll build again tomorrow."
+    }
+  ]
+}
